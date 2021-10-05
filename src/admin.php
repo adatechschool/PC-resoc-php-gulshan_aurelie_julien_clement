@@ -22,16 +22,11 @@
                     <li><a href="followers.php?user_id=5">Mes suiveurs</a></li>
                     <li><a href="subscriptions.php?user_id=5">Mes abonnements</a></li>
                 </ul>
-
             </nav>
         </header>
-
         <?php
-        /**
-         * Etape 1: Ouvrir une connexion avec la base de donnée.
-         */
-        // on va en avoir besoin pour la suite
-        $mysqli = new mysqli("localhost", "root", "root", "socialnetwork");
+            $mysqli = new mysqli("localhost:3307", "root", "", "socialnetwork");
+            $mysqli->set_charset("utf8mb4"); 
         //verification
         if ($mysqli->connect_errno)
         {
@@ -54,7 +49,6 @@
                     echo("Échec de la requete : " . $mysqli->error);
                     exit();
                 }
-
                 /*
                  * Etape 3 : @todo : Afficher les mots clés en s'inspirant de ce qui a été fait dans news.php
                  * Attention à en pas oublier de modifier tag_id=321 avec l'id du mot dans le lien
@@ -64,10 +58,10 @@
                     echo "<pre>" . print_r($tag, 1) . "</pre>";
                     ?>
                     <article>
-                        <h3>#chaussette</h3>
-                        <p>id:321</p>
+                        <h3><?php echo $tag['label'] ?></h3>
+                        <p>id:<?php echo $tag['id'] ?></p>
                         <nav>
-                            <a href="tags.php?tag_id=321">Messages</a>
+                            <a href="tags.php?tag_id=7">Messages</a>
                         </nav>
                     </article>
                 <?php } ?>
@@ -87,7 +81,6 @@
                     echo("Échec de la requete : " . $mysqli->error);
                     exit();
                 }
-
                 /*
                  * Etape 5 : @todo : Afficher les utilisatrices en s'inspirant de ce qui a été fait dans news.php
                  * Attention à en pas oublier de modifier dans le lien les "user_id=123" avec l'id de l'utilisatrice
