@@ -11,16 +11,16 @@
             <a href='admin.php'><img src="resoc.jpg" alt="Logo de notre réseau social"/></a>
             <nav id="menu">
                 <a href="news.php">Actualités</a>
-                <a href="wall.php?user_id=5">Mur</a>
-                <a href="feed.php?user_id=5">Flux</a>
-                <a href="tags.php?tag_id=1">Mots-clés</a>
+                <a href="wall.php?user_id=<?php echo 1 ?>">Mur</a>
+                <a href="feed.php?user_id=<?php echo 1 ?>">Flux</a>
+                <a href="tags.php?tag_id=<?php echo 1 ?>">Mots-clés</a>
             </nav>
             <nav id="user">
                 <a href="#">▾ Profil</a>
                 <ul>
-                    <li><a href="settings.php?user_id=5">Paramètres</a></li>
-                    <li><a href="followers.php?user_id=5">Mes suiveurs</a></li>
-                    <li><a href="subscriptions.php?user_id=5">Mes abonnements</a></li>
+                    <li><a href="settings.php?user_id=<?php echo 1 ?>">Paramètres</a></li>
+                    <li><a href="followers.php?user_id=<?php echo 1 ?>">Mes suiveurs</a></li>
+                    <li><a href="subscriptions.php?user_id=<?php echo 1 ?>">Mes abonnements</a></li>
                 </ul>
             </nav>
         </header>
@@ -34,11 +34,13 @@
                 </section>
             </aside>
             <main>
+                
                 <?php
                 /*
                   // Documentation : les exemples https://www.php.net/manual/fr/mysqli.query.php
                   // plus généralement : https://www.php.net/manual/fr/mysqli.query.php
                  */
+
                 // Etape 1: Ouvrir une connexion avec la base de donnée.
                 $mysqli = new mysqli("localhost:3307", "root", "", "socialnetwork");
                 $mysqli->set_charset("utf8mb4"); 
@@ -49,6 +51,7 @@
                     echo("<p>Indice: Vérifiez les parametres de <code>new mysqli(...</code></p>");
                     exit();
                 }
+
                 // Etape 2: Poser une question à la base de donnée et récupérer ses informations
                 // cette requete vous est donnée, elle est complexe mais correcte, 
                 // si vous ne la comprenez pas c'est normal, passez, on y reviendra
@@ -73,6 +76,7 @@
                     echo("<p>Indice: Vérifiez les la requete  SQL suivante dans phpmyadmin<code>$laQuestionEnSql</code></p>");
                     exit();
                 }
+
                 // Etape 3: Parcourir ces données et les ranger bien comme il faut dans du html
                 // NB: à chaque tour du while, la variable post ci dessous reçois les informations du post suivant.
                 while ($post = $lesInformations->fetch_assoc())
@@ -92,7 +96,7 @@
                             <p><?php echo $post['content'] ?></p>
                         </div>
                         <footer>
-                            <small>:cœurs:<?php echo $post['like_number'] ?>  </small>
+                            <small>♥<?php echo $post['like_number'] ?>  </small>
                             <?php $tags = explode (",", $post['taglist']);
                                 foreach ($tags as $singlevalue) {
                                 echo "<a href=''>".$singlevalue."</a> &nbsp;";
@@ -104,6 +108,7 @@
                     // avec le <?php ci-dessus on retourne en mode php 
                 }// cette accolade ferme et termine la boucle while ouverte avant.
                 ?>
+
             </main>
         </div>
     </body>

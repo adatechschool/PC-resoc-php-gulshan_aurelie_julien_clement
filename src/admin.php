@@ -11,19 +11,21 @@
             <img src="resoc.jpg" alt="Logo de notre réseau social"/>
             <nav id="menu">
                 <a href="news.php">Actualités</a>
-                <a href="wall.php?user_id=5">Mur</a>
-                <a href="feed.php?user_id=5">Flux</a>
-                <a href="tags.php?tag_id=1">Mots-clés</a>
+                <a href="wall.php?user_id=<?php echo 1 ?>">Mur</a>
+                <a href="feed.php?user_id=<?php echo 1 ?>">Flux</a>
+                <a href="tags.php?tag_id=<?php echo 1 ?>">Mots-clés</a>
             </nav>
             <nav id="user">
                 <a href="#">Profil</a>
                 <ul>
-                    <li><a href="settings.php?user_id=5">Paramètres</a></li>
-                    <li><a href="followers.php?user_id=5">Mes suiveurs</a></li>
-                    <li><a href="subscriptions.php?user_id=5">Mes abonnements</a></li>
+                    <li><a href="settings.php?user_id=<?php echo 1 ?>">Paramètres</a></li>
+                    <li><a href="followers.php?user_id=<?php echo 1 ?>">Mes suiveurs</a></li>
+                    <li><a href="subscriptions.php?user_id=<?php echo 1 ?>">Mes abonnements</a></li>
                 </ul>
+
             </nav>
         </header>
+
         <?php
             $mysqli = new mysqli("localhost:3307", "root", "", "socialnetwork");
             $mysqli->set_charset("utf8mb4"); 
@@ -49,19 +51,19 @@
                     echo("Échec de la requete : " . $mysqli->error);
                     exit();
                 }
+
                 /*
                  * Etape 3 : @todo : Afficher les mots clés en s'inspirant de ce qui a été fait dans news.php
                  * Attention à en pas oublier de modifier tag_id=321 avec l'id du mot dans le lien
                  */
                 while ($tag = $lesInformations->fetch_assoc())
                 {
-                    echo "<pre>" . print_r($tag, 1) . "</pre>";
-                    ?>
+                ?>
                     <article>
                         <h3><?php echo $tag['label'] ?></h3>
                         <p>id:<?php echo $tag['id'] ?></p>
                         <nav>
-                            <a href="tags.php?tag_id=7">Messages</a>
+                            <a href="tags.php?tag_id=<?php echo $tag['id']?>">Messages</a>
                         </nav>
                     </article>
                 <?php } ?>
@@ -81,23 +83,23 @@
                     echo("Échec de la requete : " . $mysqli->error);
                     exit();
                 }
+
                 /*
                  * Etape 5 : @todo : Afficher les utilisatrices en s'inspirant de ce qui a été fait dans news.php
                  * Attention à en pas oublier de modifier dans le lien les "user_id=123" avec l'id de l'utilisatrice
                  */
-                while ($tag = $lesInformations->fetch_assoc())
+                while ($userName = $lesInformations->fetch_assoc())
                 {
-                    echo "<pre>" . print_r($tag, 1) . "</pre>";
-                    ?>
+                ?>
                     <article>
-                        <h3>Alexandra</h3>
-                        <p>id:123</p>
+                        <h3><?php echo $userName['alias'] ?></h3>
+                        <p>id:<?php echo $userName['id'] ?></p>
                         <nav>
-                            <a href="wall.php?user_id=123">Mur</a>
-                            | <a href="feed.php?user_id=123">Flux</a>
-                            | <a href="settings.php?user_id=123">Paramètres</a>
-                            | <a href="followers.php?user_id=123">Suiveurs</a>
-                            | <a href="subscriptions.php?user_id=123">Abonnements</a>
+                            <a href="wall.php?user_id=<?php echo $userName['id'] ?>">Mur</a>
+                            | <a href="feed.php?user_id=<?php echo $userName['id'] ?>">Flux</a>
+                            | <a href="settings.php?user_id=<?php echo $userName['id'] ?>">Paramètres</a>
+                            | <a href="followers.php?user_id=<?php echo $userName['id'] ?>">Suiveurs</a>
+                            | <a href="subscriptions.php?user_id=<?php echo $userName['id'] ?>">Abonnements</a>
                         </nav>
                     </article>
                 <?php } ?>
