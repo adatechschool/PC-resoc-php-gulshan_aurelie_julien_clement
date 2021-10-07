@@ -9,42 +9,41 @@
     <body>
         <header>
             <img src="resoc.jpg" alt="Logo de notre réseau social"/>
-            <nav id="menu">
-                <a href="news.php">Actualités</a>
-                <a href="wall.php?user_id=<?php echo 1 ?>">Mur</a>
-                <a href="feed.php?user_id=<?php echo 1 ?>">Flux</a>
-                <a href="tags.php?tag_id=<?php echo 1 ?>">Mots-clés</a>
-            </nav>
-            <nav id="user">
-                <a href="#">Profil</a>
-                <ul>
-                    <li><a href="settings.php?user_id=<?php echo 1 ?>">Paramètres</a></li>
-                    <li><a href="followers.php?user_id=<?php echo 1 ?>">Mes suiveurs</a></li>
-                    <li><a href="subscriptions.php?user_id=<?php echo 1 ?>">Mes abonnements</a></li>
-                </ul>
 
-            </nav>
-        </header>
-        <div id="wrapper">
             <?php
-            /**
-             * Cette page est similaire à wall.php ou feed.php 
-             * mais elle porte sur les mots-clés (tags)
-             */
-            /**
-             * Etape 1: Le mur concerne un mot-clé en particulier
-             */
-            $tagId = $_GET['tag_id'];
-            $userId = 1;
-            ?>
-            <?php
-            /**
-             * Etape 2: se connecter à la base de donnée
-             */
             $mysqli = new mysqli("localhost:3307", "root", "", "socialnetwork");
             $mysqli->set_charset("utf8mb4");
-            ?>
 
+            $userEnSql = "SELECT users.id, posts_tags.tag_id FROM `users`"
+            ." INNER JOIN `posts` ON posts.user_id = users.id"
+            ." INNER JOIN `posts_tags` ON posts_tags.post_id = posts.id";
+
+            $userInfo = $mysqli->query($userEnSql);
+
+            if ($link = $userInfo->fetch_assoc())
+            {   
+                $tagId = $link['tag_id'];
+                $userId = $link['id'];
+            } ?>
+
+            <nav id="menu">
+                    <a href="news.php">Actualités</a>
+                    <a href="wall.php?user_id=<?php echo $link['id'] ?>">Mur</a>
+                    <a href="feed.php?user_id=<?php echo $link['id'] ?>">Flux</a>
+                    <a href="tags.php?tag_id=<?php echo $link['tag_id'] ?>">Mots-clés</a>               
+                </nav>
+
+                <nav id="user">
+                    <a href="#">Profil</a>
+                    <ul>
+                        <li><a href="settings.php?user_id=<?php echo $link['id'] ?>">Paramètres</a></li>
+                        <li><a href="followers.php?user_id=<?php echo $link['id'] ?>">Mes suiveurs</a></li>
+                        <li><a href="subscriptions.php?user_id=<?php echo $link['id'] ?>">Mes abonnements</a></li>
+                    </ul>
+            </nav>
+
+        </header>
+        <div id="wrapper">
             <aside>
                 <?php
                 /**
@@ -60,7 +59,7 @@
                     <h3>Présentation</h3>
                     <p>Sur cette page vous trouverez les derniers messages comportant
                         le mot-clé <?php echo $tag['label'] ?>
-                        (n° <?php echo $_GET['tag_id'] ?>)
+                        (n° <?php echo $link['tag_id'] ?>)
                     </p>
 
                 </section>
@@ -73,6 +72,7 @@
                 $laQuestionEnSql = "SELECT `posts`.`content`,"
                         . "`posts`.`created`,"
                         . "`users`.`alias` as author_name,  "
+                        . "`users`.`id` as user_id,  "
                         . "count(`likes`.`id`) as like_number,  "
                         . "GROUP_CONCAT(DISTINCT `tags`.`label`) AS taglist "
                         . "FROM `posts_tags` as filter "
@@ -101,7 +101,9 @@
                         <h3>
                             <time datetime='<?php echo $post['created'] ?>' ><?php echo $post['created'] ?></time>
                         </h3>
-                        <address>par <?php echo $post['author_name'] ?></address>
+                        <address>par 
+                        <a href="wall.php?user_id=<?php echo $post['user_id'] ?>"><?php echo $post['author_name'] ?></a>
+                    </address>
                     <div>
                         <p><?php echo $post['content'] ?></p>
                     </div>                                            

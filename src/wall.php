@@ -1,3 +1,6 @@
+<?php
+session_start(); 
+?>
 <!doctype html>
 <html lang="fr">
     <head>
@@ -9,6 +12,11 @@
     <body>
         <header>
             <img src="resoc.jpg" alt="Logo de notre réseau social"/>
+            <?php
+
+            $mysqli = new mysqli("localhost:3307", "root", "", "socialnetwork");
+            $mysqli->set_charset("utf8mb4");
+            ?>
             <nav id="menu">
                 <a href="news.php">Actualités</a>
                 <a href="wall.php?user_id=<?php echo 1 ?>">Mur</a>
@@ -36,13 +44,7 @@
              */
             $userId = $_GET['user_id'];
             ?>
-            <?php
-            /**
-             * Etape 2: se connecter à la base de donnée
-             */
-            $mysqli = new mysqli("localhost:3307", "root", "", "socialnetwork");
-            $mysqli->set_charset("utf8mb4");
-            ?>
+
 
             <aside>
                 <?php

@@ -26,24 +26,20 @@
             </nav>
         </header>
         <div id="wrapper">
-            <?php
-            /**
-             * Cette page est TRES similaire à wall.php. 
-             * Vous avez sensiblement à y faire la meme chose.
-             * Il y a un seul point qui change c'est la requete sql.
-             */
-            /**
-             * Etape 1: Le mur concerne un utilisateur en particulier
-             */
-            $userId = $_GET['user_id'];
-            ?>
-            <?php
-            /**
-             * Etape 2: se connecter à la base de donnée
-             */
+        <?php
             $mysqli = new mysqli("localhost:3307", "root", "", "socialnetwork");
             $mysqli->set_charset("utf8mb4");
-            ?>
+
+            $userEnSql = "SELECT users.id, posts_tags.tag_id FROM `users`"
+            ." INNER JOIN `posts` ON posts.user_id = users.id"
+            ." INNER JOIN `posts_tags` ON posts_tags.post_id = posts.id";
+
+            $userInfo = $mysqli->query($userEnSql);
+            $link = $userInfo->fetch_assoc();    
+
+            $tagId = $link['tag_id'];
+            $userId = $link['id'];
+        ?>
 
             <aside>
                 <?php
