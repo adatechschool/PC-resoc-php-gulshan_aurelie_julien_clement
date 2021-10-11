@@ -1,5 +1,6 @@
 <?php
 session_start();
+print_r ($_SESSION);
 ?>
 <!doctype html>
 <html lang="fr">
@@ -13,7 +14,7 @@ session_start();
         <header>
             <img src="resoc.jpg" alt="Logo de notre réseau social"/>
             <?php
-            $mysqli = new mysqli("localhost:3307", "root", "", "socialnetwork");
+            $mysqli = new mysqli("localhost:3306", "root", "", "socialnetwork");
             $mysqli->set_charset("utf8mb4");
 
             $userEnSql = "SELECT users.id, posts_tags.tag_id FROM `users`"
@@ -32,7 +33,8 @@ session_start();
                 <a href="news.php">Actualités</a>
                 <a href="wall.php?user_id=<?php echo $_SESSION['connected_id'] ?>">Mur</a>
                 <a href="feed.php?user_id=<?php echo $_SESSION['connected_id'] ?>">Flux</a>
-                <a href="tags.php?tag_id=<?php echo $link['tag_id'] ?>">Mots-clés</a>  
+                <a href="tags.php?tag_id=<?php echo $link['tag_id'] ?>">Mots-clés</a>
+                <p>connected_id : <?php echo (isset($_SESSION['connected_id']) ? $_SESSION['connected_id'] : 0) ?></p>  
             </nav>
             <nav id="user">
                 <a href="#">Profil</a>
@@ -53,7 +55,7 @@ session_start();
                 <article>
                     <h2>Connexion</h2>
                     <?php
-                    $mysqli = new mysqli("localhost:3307", "root", "", "socialnetwork");
+                    $mysqli = new mysqli("localhost:3306", "root", "", "socialnetwork");
                     $mysqli->set_charset("utf8mb4");
                     /**
                      * TRAITEMENT DU FORMULAIRE

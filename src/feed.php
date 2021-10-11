@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!doctype html>
 <html lang="fr">
     <head>
@@ -9,25 +12,14 @@
     <body>
         <header>
             <img src="resoc.jpg" alt="Logo de notre réseau social"/>
-            <nav id="menu">
-                <a href="news.php">Actualités</a>
-                <a href="wall.php?user_id=<?php echo 1 ?>">Mur</a>
-                <a href="feed.php?user_id=<?php echo 1 ?>">Flux</a>
-                <a href="tags.php?tag_id=<?php echo 1 ?>">Mots-clés</a>
-            </nav>
-            <nav id="user">
-                <a href="#">Profil</a>
-                <ul>
-                    <li><a href="settings.php?user_id=<?php echo 1 ?>">Paramètres</a></li>
-                    <li><a href="followers.php?user_id=<?php echo 1 ?>">Mes suiveurs</a></li>
-                    <li><a href="subscriptions.php?user_id=<?php echo 1 ?>">Mes abonnements</a></li>
-                </ul>
-
-            </nav>
+            <?php
+                include("menu.php");
+                print_menu(isset($_SESSION['connected_id']) ? $_SESSION['connected_id'] : -1);
+            ?> 
         </header>
         <div id="wrapper">
         <?php
-            $mysqli = new mysqli("localhost:3307", "root", "", "socialnetwork");
+            $mysqli = new mysqli("localhost:3306", "root", "", "socialnetwork");
             $mysqli->set_charset("utf8mb4");
 
             $userEnSql = "SELECT users.id, posts_tags.tag_id FROM `users`"
@@ -46,7 +38,7 @@
                 /**
                  * Etape 3: récupérer le nom de l'utilisateur
                  */
-                $laQuestionEnSql = "SELECT * FROM `users` WHERE id=" . intval($userId);
+                $laQuestionEnSql = "SELECT * FROM `users` WHERE id=" . intval($_GET['user_id']);
                 $lesInformations = $mysqli->query($laQuestionEnSql);
                 $user = $lesInformations->fetch_assoc();
                 ?>

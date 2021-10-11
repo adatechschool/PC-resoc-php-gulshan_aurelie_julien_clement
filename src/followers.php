@@ -11,7 +11,7 @@ session_start();
     </head>
     <body>
         <?php
-            $mysqli = new mysqli("localhost:3307", "root", "", "socialnetwork");
+            $mysqli = new mysqli("localhost:3306", "root", "", "socialnetwork");
             $mysqli->set_charset("utf8mb4");
 
             $userEnSql = "SELECT users.id, posts_tags.tag_id FROM `users`"
@@ -28,20 +28,10 @@ session_start();
         <header>
             <img src="resoc.jpg" alt="Logo de notre réseau social"/> 
 
-            <nav id="menu">
-                <a href="news.php">Actualités</a>
-                <a href="wall.php?user_id=<?php echo $link['id'] ?>">Mur</a>
-                <a href="feed.php?user_id=<?php echo $link['id'] ?>">Flux</a>
-                <a href="tags.php?tag_id=<?php echo $link['tag_id'] ?>">Mots-clés</a>  
-            </nav>
-            <nav id="user">
-                <a href="#">Profil</a>
-                <ul>
-                    <li><a href="settings.php?user_id=<?php echo $link['id'] ?>">Paramètres</a></li>
-                    <li><a href="followers.php?user_id=<?php echo $link['id'] ?>">Mes suiveurs</a></li>
-                    <li><a href="subscriptions.php?user_id=<?php echo $link['id'] ?>">Mes abonnements</a></li>
-                </ul>
-            </nav>
+            <?php
+                include("menu.php");
+                print_menu(isset($_SESSION['connected_id']) ? $_SESSION['connected_id'] : 0);
+            ?> 
         </header>
 
         <div id="wrapper">          

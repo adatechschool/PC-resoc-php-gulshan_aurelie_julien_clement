@@ -14,24 +14,13 @@ session_start();
             <img src="resoc.jpg" alt="Logo de notre réseau social"/>
             <?php
 
-            $mysqli = new mysqli("localhost:3307", "root", "", "socialnetwork");
+            $mysqli = new mysqli("localhost:3306", "root", "", "socialnetwork");
             $mysqli->set_charset("utf8mb4");
             ?>
-            <nav id="menu">
-                <a href="news.php">Actualités</a>
-                <a href="wall.php?user_id=<?php echo 1 ?>">Mur</a>
-                <a href="feed.php?user_id=<?php echo 1 ?>">Flux</a>
-                <a href="tags.php?tag_id=<?php echo 1 ?>">Mots-clés</a>
-            </nav>
-            <nav id="user">
-                <a href="#">Profil</a>
-                <ul>
-                    <li><a href="settings.php?user_id=<?php echo 1 ?>">Paramètres</a></li>
-                    <li><a href="followers.php?user_id=<?php echo 1 ?>">Mes suiveurs</a></li>
-                    <li><a href="subscriptions.php?user_id=<?php echo 1 ?>">Mes abonnements</a></li>
-                </ul>
-
-            </nav>
+            <?php
+                include("menu.php");
+                print_menu(isset($_SESSION['connected_id']) ? $_SESSION['connected_id'] : 0);
+            ?> 
         </header>
         <div id="wrapper">
             <?php
@@ -42,7 +31,7 @@ session_start();
              * Documentation : https://www.php.net/manual/fr/reserved.variables.get.php
              * ... mais en résumé c'est une manière de passer des informations à la page en ajoutant des choses dans l'url
              */
-            $userId = $_GET['user_id'];
+            $userId = $_SESSION['connected_id'];
             ?>
 
 
@@ -59,11 +48,56 @@ session_start();
                 <section>
                     <h3>Présentation</h3>
                     <p>Sur cette page vous trouverez tous les message de l'utilisatrice : <?php echo $user['alias'] ?>
-                        (n° <?php echo $_GET['user_id'] ?>)
+                        (n° <?php echo $_SESSION['connected_id'] ?>)
                     </p>
                 </section>
             </aside>
             <main>
+                <?php
+                    $enCoursDeTraitement = isset($_POST['message']);
+                    if ($enCoursDeTraitement)
+                    {
+                        // on ne fait ce qui suit que si un formulaire a été soumis.
+                        $postContent = $_POST['message'];
+                        $tagLabel = $_POST['tag'];
+
+                        // Petite sécuritén - pour éviter les injection sql : https://www.w3schools.com/sql/sql_injection.asp
+                        $postContent = $mysqli->real_escape_string($postContent);
+                        $tagLabel = $mysqli->real_escape_string($tagLabel);
+
+                        // Construction de la requete
+                        $lInstructionSql = "INSERT INTO `posts` "
+                                . "(`id`, `user_id`, `content`, `created`) "
+                                . "VALUES (NULL, "
+                                . "" . $_SESSION["connected_id"] . ", "
+                                . "'" . $postContent . "', "
+                                . "NOW());"
+                                . "";
+                        // tag
+                        $lInstructionSqlTags = "INSERT INTO `tags` "
+                                . "(`id`, `label`) "
+                                . "VALUES (NULL, "
+                                . "'" . $tagLabel . "');";
+                        // post-tag
+                        $lInstructionSqlPostTags = "INSERT INTO `posts_tags` "
+                                . "(`id`, `post_id`, `tag_id`) "
+                                . "VALUES (NULL, "
+                                . "(SELECT `id` FROM `posts` WHERE `content` ='" . $postContent . "'), "
+                                . "(SELECT `id` FROM `tags` WHERE `label` ='" . $tagLabel . "'));";
+                        // Execution
+                        $ok = $mysqli->query($lInstructionSql);
+                        $ok = $ok and $mysqli->query($lInstructionSqlTags);
+                        if ( ! $ok)
+                        {
+                            echo "Impossible d'ajouter le message: " . $mysqli->error;
+                        } else
+                        {
+                            echo "Message posté";
+                            print_r($lInstructionSqlTags);
+                            print_r($lInstructionSqlPostTags);
+                        }
+                    }
+                    ?>
                 <?php
                 /**
                  * Etape 3: récupérer tous les messages de l'utilisatrice
@@ -111,8 +145,25 @@ session_start();
                             ?>
                         </footer>
                     </article>
-                <?php } ?>
-
+                <?php }
+                /**
+                 * Poster un nouveau message 
+                 */
+                    // Vérifier si on est en train d'afficher ou de traiter le formulaire
+                    // si on recoit un champs email rempli il y a une chance que ce soit un traitement
+                    ?>                     
+                    <form action="wall.php" method="post">
+                        <input type='hidden' name='newPost' value='validate'>
+                        <dl>
+                            <dt><label for='message'>Message</label></dt>
+                            <dd><textarea name='message'></textarea></dd>
+                        </dl>
+                        <input type='hidden' name='tag' value='validate'>
+                        <dl>
+                            <dt><label for='tag'>Mot-clé</label></dt>
+                            <dd><textarea name='tag'></textarea></dd>
+                        </dl>
+                        <input type='submit'>
 
             </main>
         </div>
