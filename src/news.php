@@ -45,7 +45,33 @@ session_start();
                     echo("<p>Indice: Vérifiez les parametres de <code>new mysqli(...</code></p>");
                     exit();
                 }
+                
+                    $likesEnCoursDeTraitement = isset($_POST['post_id']);
+                    if ($likesEnCoursDeTraitement)
+                    {
+                        // on ne fait ce qui suit que si un formulaire a été soumis.
+                        $postLike = $_POST['post_id'];
 
+                        // Petite sécuritén - pour éviter les injection sql :
+                        $postLike = $mysqli->real_escape_string($postLike);
+
+                        // Construction de la requete
+                        $lInstructionSql = "INSERT INTO `likes` "
+                                . "(`id`, `user_id`, `post_id`) "
+                                . "VALUES (NULL, "
+                                . "" . $_SESSION["connected_id"] . ", "
+                                . "" . $postLike . ");";
+                        
+                        // Execution
+                        $ok = $mysqli->query($lInstructionSql);
+                        if ( ! $ok)
+                        {
+                            echo "Impossible d'ajouter un like: " . $mysqli->error;
+                        } else
+                        {
+                            echo "like posté";
+                        }
+                    }
                 // Etape 2: Poser une question à la base de donnée et récupérer ses informations
                 // cette requete vous est donnée, elle est complexe mais correcte, 
                 // si vous ne la comprenez pas c'est normal, passez, on y reviendra
@@ -90,7 +116,11 @@ session_start();
                             <p><?php echo $post['content'] ?></p>
                         </div>
                         <footer>
-                            <small>♥<?php echo $post['like_number'] ?>  </small>
+                            <small><form action="wall.php" method="post">
+                             <input type='hidden' name='post_id' value='<?php echo $post['post_id'] ?>'>
+                             <input type="submit" value="like">
+                                ♥ <?php echo $post['like_number'] ?>
+                             </form></small>
                             <?php $tags = explode (",", $post['taglist']);
                                 foreach ($tags as $singlevalue) {
                                 echo "<a href=''>".$singlevalue."</a> &nbsp;";
