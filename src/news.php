@@ -78,6 +78,7 @@ session_start();
                 $laQuestionEnSql = "SELECT `posts`.`content`,"
                         . "`posts`.`created`,"
                         . "`users`.`alias` as author_name,  "
+                        . "`posts`.`id` as post_id,  "
                         . "count(`likes`.`id`) as like_number,  "
                         . "GROUP_CONCAT(DISTINCT `tags`.`label`) AS taglist "
                         . "FROM `posts`"
@@ -116,7 +117,7 @@ session_start();
                             <p><?php echo $post['content'] ?></p>
                         </div>
                         <footer>
-                            <small><form action="wall.php" method="post">
+                            <small><form action="news.php" method="post">
                              <input type='hidden' name='post_id' value='<?php echo $post['post_id'] ?>'>
                              <input type="submit" value="like">
                                 ♥ <?php echo $post['like_number'] ?>
