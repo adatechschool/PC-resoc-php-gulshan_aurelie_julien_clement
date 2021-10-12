@@ -66,7 +66,7 @@ session_start();
                         $tagLabel = $mysqli->real_escape_string($tagLabel);
 
                         // Construction de la requete
-                        $lInstructionSql = "INSERT INTO `posts` "
+                        $instructionSql = "INSERT INTO `posts` "
                                 . "(`id`, `user_id`, `content`, `created`) "
                                 . "VALUES (NULL, "
                                 . "" . $_SESSION["connected_id"] . ", "
@@ -74,27 +74,27 @@ session_start();
                                 . "NOW());"
                                 . "";
                         // tag
-                        $lInstructionSqlTags = "INSERT INTO `tags` "
+                        $instructionSqlTags = "INSERT INTO `tags` "
                                 . "(`id`, `label`) "
                                 . "VALUES (NULL, "
                                 . "'" . $tagLabel . "');";
                         // post-tag
-                        $lInstructionSqlPostTags = "INSERT INTO `posts_tags` "
+                        $instructionSqlPostTags = "INSERT INTO `posts_tags` "
                                 . "(`id`, `post_id`, `tag_id`) "
                                 . "VALUES (NULL, "
                                 . "(SELECT `id` FROM `posts` WHERE `content` ='" . $postContent . "'), "
                                 . "(SELECT `id` FROM `tags` WHERE `label` ='" . $tagLabel . "'));";
                         // Execution
-                        $ok = $mysqli->query($lInstructionSql);
-                        $ok = $ok and $mysqli->query($lInstructionSqlTags);
-                        if ( ! $ok)
+                        $okPost = $mysqli->query($instructionSql);
+                        $okTag = $mysqli->query($instructionSqlTags);
+                        $okPostTag = $mysqli->query($instructionSqlPostTags);
+                        // Contrôle des retours
+                        if ( ! $okPost or ! $okTag  or ! $okPostTag)
                         {
                             echo "Impossible d'ajouter le message: " . $mysqli->error;
                         } else
                         {
                             echo "Message posté";
-                            print_r($lInstructionSqlTags);
-                            print_r($lInstructionSqlPostTags);
                         }
                     }
                     ?>
