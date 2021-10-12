@@ -14,7 +14,7 @@ session_start();
             <img src="resoc.jpg" alt="Logo de notre réseau social"/>
 
             <?php
-            $mysqli = new mysqli("localhost:3306", "root", "", "socialnetwork");
+            $mysqli = new mysqli("localhost:3306", "root", "root", "socialnetwork");
             $mysqli->set_charset("utf8mb4");
 
             $userEnSql = "SELECT users.id, posts_tags.tag_id FROM `users`"

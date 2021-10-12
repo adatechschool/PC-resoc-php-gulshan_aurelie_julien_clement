@@ -16,7 +16,7 @@
         </header>
 
         <?php
-            $mysqli = new mysqli("localhost:3306", "root", "", "socialnetwork");
+            $mysqli = new mysqli("localhost:3306", "root", "root", "socialnetwork");
             $mysqli->set_charset("utf8mb4"); 
         //verification
         if ($mysqli->connect_errno)

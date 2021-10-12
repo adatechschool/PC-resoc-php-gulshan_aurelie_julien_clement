@@ -32,7 +32,7 @@
                 // Etape 1: récupérer l'id de l'utilisateur
                 $userId = $_GET['user_id'];
                 // Etape 2: se connecter à la base de donnée
-                $mysqli = new mysqli("localhost:3306", "root", "", "socialnetwork");
+                $mysqli = new mysqli("localhost:3306", "root", "root", "socialnetwork");
                 $mysqli->set_charset("utf8mb4");
                 // Etape 3: récupérer le nom de l'utilisateur
                 $laQuestionEnSql = "SELECT `users`.* "

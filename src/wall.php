@@ -14,7 +14,7 @@ session_start();
             <img src="resoc.jpg" alt="Logo de notre réseau social"/>
             <?php
 
-            $mysqli = new mysqli("localhost:3306", "root", "", "socialnetwork");
+            $mysqli = new mysqli("localhost:3306", "root", "root", "socialnetwork");
             $mysqli->set_charset("utf8mb4");
             ?>
             <?php
@@ -54,19 +54,49 @@ session_start();
             </aside>
             <main>
                 <?php
+                    $likesEnCoursDeTraitement = isset($_POST['post_id']);
+                    if ($likesEnCoursDeTraitement)
+                    {
+                        // on ne fait ce qui suit que si un formulaire a été soumis.
+                        $postLike = $_POST['post_id'];
+
+                        // Petite sécuritén - pour éviter les injection sql :
+                        $postLike = $mysqli->real_escape_string($postLike);
+
+                        // Construction de la requete
+                        $lInstructionSql = "INSERT INTO `likes` "
+                                . "(`id`, `user_id`, `post_id`) "
+                                . "VALUES (NULL, "
+                                . "" . $_SESSION["connected_id"] . ", "
+                                . "" . $postLike . ");";
+                        
+                        // Execution
+                        $ok = $mysqli->query($lInstructionSql);
+                        if ( ! $ok)
+                        {
+                            echo "Impossible d'ajouter un like: " . $mysqli->error;
+                        } else
+                        {
+                            echo "like posté";
+                        }
+                    }
+                    
+                ?>
+
+                <?php
                     $enCoursDeTraitement = isset($_POST['message']);
                     if ($enCoursDeTraitement)
                     {
                         // on ne fait ce qui suit que si un formulaire a été soumis.
                         $postContent = $_POST['message'];
                         $tagLabel = $_POST['tag'];
-
+                        
                         // Petite sécuritén - pour éviter les injection sql : https://www.w3schools.com/sql/sql_injection.asp
                         $postContent = $mysqli->real_escape_string($postContent);
                         $tagLabel = $mysqli->real_escape_string($tagLabel);
 
                         // Construction de la requete
-                        $instructionSql = "INSERT INTO `posts` "
+                        $lInstructionSql = "INSERT INTO `posts` "
                                 . "(`id`, `user_id`, `content`, `created`) "
                                 . "VALUES (NULL, "
                                 . "" . $_SESSION["connected_id"] . ", "
@@ -74,27 +104,27 @@ session_start();
                                 . "NOW());"
                                 . "";
                         // tag
-                        $instructionSqlTags = "INSERT INTO `tags` "
+                        $lInstructionSqlTags = "INSERT INTO `tags` "
                                 . "(`id`, `label`) "
                                 . "VALUES (NULL, "
                                 . "'" . $tagLabel . "');";
                         // post-tag
-                        $instructionSqlPostTags = "INSERT INTO `posts_tags` "
+                        $lInstructionSqlPostTags = "INSERT INTO `posts_tags` "
                                 . "(`id`, `post_id`, `tag_id`) "
                                 . "VALUES (NULL, "
                                 . "(SELECT `id` FROM `posts` WHERE `content` ='" . $postContent . "'), "
                                 . "(SELECT `id` FROM `tags` WHERE `label` ='" . $tagLabel . "'));";
                         // Execution
-                        $okPost = $mysqli->query($instructionSql);
-                        $okTag = $mysqli->query($instructionSqlTags);
-                        $okPostTag = $mysqli->query($instructionSqlPostTags);
-                        // Contrôle des retours
-                        if ( ! $okPost or ! $okTag  or ! $okPostTag)
+                        $ok = $mysqli->query($lInstructionSql);
+                        $ok = $ok and $mysqli->query($lInstructionSqlTags);
+                        if ( ! $ok)
                         {
                             echo "Impossible d'ajouter le message: " . $mysqli->error;
                         } else
                         {
                             echo "Message posté";
+                            print_r($lInstructionSqlTags);
+                            print_r($lInstructionSqlPostTags);
                         }
                     }
                     ?>
@@ -105,7 +135,8 @@ session_start();
                 $laQuestionEnSql = "SELECT `posts`.`content`,"
                         . "`posts`.`created`,"
                         . "`users`.`alias` as author_name,  "
-                        . "count(`likes`.`id`) as like_number,  "
+                        . "`posts`.`id` as post_id,  "
+                        . "count(DISTINCT `likes`.`id`) as like_number,  "
                         . "GROUP_CONCAT(DISTINCT `tags`.`label`) AS taglist "
                         . "FROM `posts`"
                         . "JOIN `users` ON  `users`.`id`=`posts`.`user_id`"
@@ -137,7 +168,12 @@ session_start();
                             <p><?php echo $post['content'] ?></p>
                         </div>                                            
                         <footer>
-                            <small>♥ <?php echo $post['like_number'] ?></small>
+                            <small><form action="wall.php" method="post">
+                             <input type='hidden' name='post_id' value='<?php echo $post['post_id'] ?>'>
+                             <input type="submit" value="like">
+                                ♥ <?php echo $post['like_number'] ?>
+                             </form>
+                            </small>
                             <?php $posts = explode (",", $post['taglist']);
                                 foreach ($posts as $singlevalue) {
                                 echo "<a href=''>".$singlevalue."</a> &nbsp;";

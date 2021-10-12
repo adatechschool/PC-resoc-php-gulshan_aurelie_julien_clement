@@ -44,7 +44,7 @@ session_start();
 
 
                         //Etape 3 : Ouvrir une connexion avec la base de donnée.
-                        $mysqli = new mysqli("localhost:3306", "root", "", "socialnetwork");
+                        $mysqli = new mysqli("localhost:3306", "root", "root", "socialnetwork");
                         $mysqli->set_charset("utf8mb4");
                         //Etape 4 : Petite sécurité
                         // pour éviter les injection sql : https://www.w3schools.com/sql/sql_injection.asp

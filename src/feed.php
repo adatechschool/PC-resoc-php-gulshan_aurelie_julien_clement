@@ -19,7 +19,7 @@ session_start();
         </header>
         <div id="wrapper">
         <?php
-            $mysqli = new mysqli("localhost:3306", "root", "", "socialnetwork");
+            $mysqli = new mysqli("localhost:3306", "root", "root", "socialnetwork");
             $mysqli->set_charset("utf8mb4");
 
             $userEnSql = "SELECT users.id, posts_tags.tag_id FROM `users`"
@@ -38,7 +38,7 @@ session_start();
                 /**
                  * Etape 3: récupérer le nom de l'utilisateur
                  */
-                $laQuestionEnSql = "SELECT * FROM `users` WHERE id=" . intval($_GET['user_id']);
+                $laQuestionEnSql = "SELECT * FROM `users` WHERE id=" . intval($_SESSION['connected_id']);
                 $lesInformations = $mysqli->query($laQuestionEnSql);
                 $user = $lesInformations->fetch_assoc();
                 ?>
@@ -47,7 +47,7 @@ session_start();
                     <h3>Présentation</h3>
                     <p>Sur cette page vous trouverez tous les message des utilisatrices
                         auxquel est abonnée l'utilisatrice <?php echo $user['alias'] ?>
-                        (n° <?php echo $_GET['user_id'] ?>)
+                        (n° <?php echo $_SESSION['connected_id'] ?>)
                     </p>
 
                 </section>

@@ -40,7 +40,7 @@
                 /**
                  * Etape 2: se connecter à la base de donnée
                  */
-                $mysqli = new mysqli("localhost:3306", "root", "", "socialnetwork");
+                $mysqli = new mysqli("localhost:3306", "root", "root", "socialnetwork");
                 $mysqli->set_charset("utf8mb4");
 
                 /**
