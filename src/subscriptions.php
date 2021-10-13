@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!doctype html>
 <html lang="fr">
     <head>
@@ -12,16 +15,27 @@
             <?php
                 include("menu.php");
                 print_menu(isset($_SESSION['connected_id']) ? $_SESSION['connected_id'] : 0);
+                $mysqli = new mysqli("localhost:3306", "root", "root", "socialnetwork");
+                $mysqli->set_charset("utf8mb4");
             ?> 
         </header>
         <div id="wrapper">
             <aside>
                 <img src="user.jpg" alt="Portrait de l'utilisatrice"/>
+                <?php
+                if (isset($_GET['user_id']))
+                {
+                $userId=$_GET['user_id'];
+                }
+                else {
+                $userId=$_SESSION['connected_id'];
+                }
+                ?>
                 <section>
                     <h3>Présentation</h3>
                     <p>Sur cette page vous trouverez la liste des personnes dont
                         l'utilisatrice
-                        n° <?php echo $_GET['user_id'] ?>
+                        n° <?php echo $userId ?>
                         suit les messages
                     </p>
 
@@ -29,11 +43,6 @@
             </aside>
             <main class='contacts'>
                 <?php
-                // Etape 1: récupérer l'id de l'utilisateur
-                $userId = $_GET['user_id'];
-                // Etape 2: se connecter à la base de donnée
-                $mysqli = new mysqli("localhost:3306", "root", "root", "socialnetwork");
-                $mysqli->set_charset("utf8mb4");
                 // Etape 3: récupérer le nom de l'utilisateur
                 $laQuestionEnSql = "SELECT `users`.* "
                         . "FROM `followers` "

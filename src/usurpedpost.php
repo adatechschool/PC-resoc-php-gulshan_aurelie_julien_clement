@@ -43,7 +43,7 @@ session_start();
                     /**
                      * BD
                      */
-                    $mysqli = new mysqli("localhost:3307", "root", "root", "socialnetwork");
+                    $mysqli = new mysqli("localhost:3306", "root", "root", "socialnetwork");
                     $mysqli->set_charset("utf8mb4");
                     /**
                      * Récupération de la liste des auteurs

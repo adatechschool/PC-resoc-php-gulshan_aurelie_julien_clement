@@ -31,7 +31,13 @@ session_start();
              * Documentation : https://www.php.net/manual/fr/reserved.variables.get.php
              * ... mais en résumé c'est une manière de passer des informations à la page en ajoutant des choses dans l'url
              */
-            $userId = $_SESSION['connected_id'];
+            if (isset($_GET['user_id']))
+            {
+                $userId=$_GET['user_id'];
+            }
+            else {
+                $userId=$_SESSION['connected_id'];
+            }
             ?>
 
 
@@ -48,7 +54,7 @@ session_start();
                 <section>
                     <h3>Présentation</h3>
                     <p>Sur cette page vous trouverez tous les message de l'utilisatrice : <?php echo $user['alias'] ?>
-                        (n° <?php echo $_SESSION['connected_id'] ?>)
+                        (n° <?php echo $userId ?>)
                     </p>
                 </section>
             </aside>

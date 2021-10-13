@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!doctype html>
 <html lang="fr">
     <head>
@@ -19,27 +22,24 @@
 
             <aside>
                 <img src="user.jpg" alt="Portrait de l'utilisatrice"/>
+                <?php
+                if (isset($_GET['user_id']))
+                {
+                $userId=$_GET['user_id'];
+                }
+                else {
+                $userId=$_SESSION['connected_id'];
+                }
+                ?>
                 <section>
                     <h3>Présentation</h3>
                     <p>Sur cette page vous trouverez les informations de l'utilisatrice
-                        n° <?php echo $_GET['user_id'] ?></p>
+                        n° <?php echo $userId ?></p>
 
                 </section>
             </aside>
             <main>
                 <?php
-                /**
-                 * Etape 1: Les paramètres concernent une utilisatrice en particulier
-                 * La première étape est donc de trouver quel est l'id de l'utilisatrice
-                 * Celui ci est indiqué en parametre GET de la page sous la forme user_id=...
-                 * Documentation : https://www.php.net/manual/fr/reserved.variables.get.php
-                 * ... mais en résumé c'est une manière de passer des informations à la page en ajoutant des choses dans l'url
-                 */
-                $userId = $_GET['user_id'];
-
-                /**
-                 * Etape 2: se connecter à la base de donnée
-                 */
                 $mysqli = new mysqli("localhost:3306", "root", "root", "socialnetwork");
                 $mysqli->set_charset("utf8mb4");
 

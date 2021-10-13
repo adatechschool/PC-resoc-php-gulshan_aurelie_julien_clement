@@ -1,6 +1,5 @@
 <?php
 session_start();
-print_r ($_SESSION);
 ?>
 <!doctype html>
 <html lang="fr">
@@ -34,7 +33,6 @@ print_r ($_SESSION);
                 <a href="wall.php?user_id=<?php echo $_SESSION['connected_id'] ?>">Mur</a>
                 <a href="feed.php?user_id=<?php echo $_SESSION['connected_id'] ?>">Flux</a>
                 <a href="tags.php?tag_id=<?php echo $link['tag_id'] ?>">Mots-clés</a>
-                <p>connected_id : <?php echo (isset($_SESSION['connected_id']) ? $_SESSION['connected_id'] : 0) ?></p>  
             </nav>
             <nav id="user">
                 <a href="#">Profil</a>

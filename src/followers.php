@@ -13,18 +13,7 @@ session_start();
         <?php
             $mysqli = new mysqli("localhost:3306", "root", "root", "socialnetwork");
             $mysqli->set_charset("utf8mb4");
-
-            $userEnSql = "SELECT users.id, posts_tags.tag_id FROM `users`"
-            ." INNER JOIN `posts` ON posts.user_id = users.id"
-            ." INNER JOIN `posts_tags` ON posts_tags.post_id = posts.id";
-
-            $userInfo = $mysqli->query($userEnSql);
-
-            if ($link = $userInfo->fetch_assoc())
-            {   
-                $tagId = $link['tag_id'];
-                $userId = $link['id'];
-            } ?>
+        ?>
         <header>
             <img src="resoc.jpg" alt="Logo de notre réseau social"/> 
 
@@ -37,18 +26,25 @@ session_start();
         <div id="wrapper">          
             <aside>
                 <img src = "user.jpg" alt = "Portrait de l'utilisatrice"/>
+                <?php
+                if (isset($_GET['user_id']))
+                {
+                $userId=$_GET['user_id'];
+                }
+                else
+                {
+                $userId=$_SESSION['connected_id'];
+                }
+                ?>
                 <section>
                     <h3>Présentation</h3>
                     <p>Sur cette page vous trouverez la liste des personnes qui
                         suivent les messages de l'utilisatrice
-                        n° <?php echo $_GET['user_id'] ?></p>
+                        n° <?php echo $userId ?></p>
                 </section>
             </aside>
             <main class='contacts'>
                 <?php
-                // Etape 1: récupérer l'id de l'utilisateur
-                $userId = $_GET['user_id'];
-
                 // Etape 3: récupérer le nom de l'utilisateur
                 $laQuestionEnSql = "SELECT `users`.* "
                         . "FROM `followers` "
