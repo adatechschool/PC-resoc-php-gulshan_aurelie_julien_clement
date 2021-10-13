@@ -1,5 +1,8 @@
-# Projet_Collectif_Template
+# Projet_Collectif
 
-Ce dépôt Git vous sert de base de travail pour les projets collectifs : en cliquant sur le lien fourni par l'encadrante, celui-ci sera automatiquement copié dans la dépôt que vous créerez pour ce projet.
 
-Il ne vous reste plus qu'à vous lancer sur le projet collectif, et à mettre à jour le dépôt au fil de l'eau !
+CREATION d'UN RESEAU SOCIAL
+- partant de pages déjà crées / login, registration, admin, news, wall, feed, tags.PHP
+
+4 personnes / à temps partiel - sur 08 jours.
+
