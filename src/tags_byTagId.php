@@ -62,6 +62,7 @@ session_start();
                  */
                 $laQuestionEnSql = "SELECT `posts`.`content`,"
                         . "`posts`.`created`,"
+                        . "`posts`.`user_id`,  "
                         . "`users`.`alias` as author_name,  "
                         . "count(`likes`.`id`) as like_number,  "
                         . "GROUP_CONCAT(DISTINCT `tags`.`label`) AS taglist "
@@ -75,6 +76,7 @@ session_start();
                         . "GROUP BY `posts`.`id`"
                         . "ORDER BY `posts`.`created` DESC  "
                 ;
+
                 $lesInformations = $mysqli->query($laQuestionEnSql);
                 if ( ! $lesInformations)
                 {
